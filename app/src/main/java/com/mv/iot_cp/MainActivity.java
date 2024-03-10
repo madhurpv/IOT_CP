@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     EditText editTextMessage, editTextTranslate;
-    Button submitButton, translateButton;
+    Button submitButton, translateButton, speakButton, speakTranslatedButton;
 
 
     // creating a variable for our
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     // creating a variable for our Database
     // Reference for Firebase.
     DatabaseReference databaseReference;
+
+    TextToSpeech textToSpeech;
 
 
     @Override
@@ -69,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         submitButton = findViewById(R.id.submitButton);
         translateButton = findViewById(R.id.translateButton);
         editTextTranslate = findViewById(R.id.editTextTranslate);
+        speakButton = findViewById(R.id.speakButton);
+        speakTranslatedButton = findViewById(R.id.speakTranslatedButton);
 
 
 
@@ -95,6 +101,19 @@ public class MainActivity extends AppCompatActivity {
 
 
         fetchDownloadedModels();
+
+
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+                // if No error is found then only it will run
+                if(i!=TextToSpeech.ERROR){
+                    // To Choose language of speech
+                    textToSpeech.setLanguage(new Locale("hin","IND",""));
+                }
+            }
+        });
 
 
 
@@ -217,6 +236,24 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+            }
+        });
+
+
+        speakButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textToSpeech.speak(editTextMessage.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
+                Toast.makeText(MainActivity.this, "Speaking message!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        speakTranslatedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textToSpeech.speak(editTextTranslate.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
+                Toast.makeText(MainActivity.this, "Speaking message!", Toast.LENGTH_SHORT).show();
             }
         });
 
