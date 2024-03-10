@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText editTextMessage, editTextTranslate;
     Button submitButton, translateButton, speakButton, speakTranslatedButton;
+    Spinner dropdownLanguageSelect;
 
 
     // creating a variable for our
@@ -61,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
 
     TextToSpeech textToSpeech;
+
+    String[] dropdownLanguageSelectItems = new String[]{"Marathi", "Kannada", "Gujarati", "Bengali", "Hindi", "Tamil"};
+    String selectedLanguage = "Marathi";
 
 
     @Override
@@ -75,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         editTextTranslate = findViewById(R.id.editTextTranslate);
         speakButton = findViewById(R.id.speakButton);
         speakTranslatedButton = findViewById(R.id.speakTranslatedButton);
+        dropdownLanguageSelect = findViewById(R.id.dropdownLanguageSelect);
 
 
 
@@ -121,6 +129,27 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, dropdownLanguageSelectItems);
+        dropdownLanguageSelect.setAdapter(adapter);
+        dropdownLanguageSelect.setSelection(0);
+        dropdownLanguageSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedLanguage = dropdownLanguageSelectItems[i];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
+
+
+
+
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,19 +170,61 @@ public class MainActivity extends AppCompatActivity {
 
                 downloadLanguage();
 
-
-
-
-
-                TranslatorOptions options =
-                        new TranslatorOptions.Builder()
+                TranslatorOptions options;
+                switch (selectedLanguage){
+                    case "Marathi":
+                        options = new TranslatorOptions.Builder()
+                                    .setSourceLanguage(TranslateLanguage.ENGLISH)
+                                    .setTargetLanguage(TranslateLanguage.MARATHI)
+                                    .build();
+                        break;
+                    case "Kannada":
+                        options = new TranslatorOptions.Builder()
+                                    .setSourceLanguage(TranslateLanguage.ENGLISH)
+                                    .setTargetLanguage(TranslateLanguage.KANNADA)
+                                    .build();
+                        break;
+                    case "Gujarati":
+                        options = new TranslatorOptions.Builder()
+                                    .setSourceLanguage(TranslateLanguage.ENGLISH)
+                                    .setTargetLanguage(TranslateLanguage.GUJARATI)
+                                    .build();
+                        break;
+                    case "Bengali":
+                        options = new TranslatorOptions.Builder()
+                                    .setSourceLanguage(TranslateLanguage.ENGLISH)
+                                    .setTargetLanguage(TranslateLanguage.BENGALI)
+                                    .build();
+                        break;
+                    case "Hindi":
+                        options = new TranslatorOptions.Builder()
+                                    .setSourceLanguage(TranslateLanguage.ENGLISH)
+                                    .setTargetLanguage(TranslateLanguage.HINDI)
+                                    .build();
+                        break;
+                    case "Tamil":
+                        options = new TranslatorOptions.Builder()
+                                    .setSourceLanguage(TranslateLanguage.ENGLISH)
+                                    .setTargetLanguage(TranslateLanguage.TAMIL)
+                                    .build();
+                        break;
+                    default:
+                        options = new TranslatorOptions.Builder()
                                 .setSourceLanguage(TranslateLanguage.ENGLISH)
                                 .setTargetLanguage(TranslateLanguage.MARATHI)
                                 .build();
-                Translator englishMarathiTranslator =
+
+                }
+
+
+
+
+
+
+                Translator englishToSelectedLanguageTranslator =
                         Translation.getClient(options);
 
-                /*englishMarathiTranslator.translate(editTextMessage.getText().toString())
+                /*englishToSelectedLanguageTranslator.translate(editTextMessage.getText().toString())
                         .addOnSuccessListener(
                                 new OnSuccessListener<String>() {
                                     @Override
@@ -168,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
                 /*DownloadConditions conditions = new DownloadConditions.Builder()
                         .requireWifi()
                         .build();*/
-                //englishMarathiTranslator.downloadModelIfNeeded(conditions)
-                englishMarathiTranslator.downloadModelIfNeeded()
+                //englishToSelectedLanguageTranslator.downloadModelIfNeeded(conditions)
+                englishToSelectedLanguageTranslator.downloadModelIfNeeded()
                         .addOnSuccessListener(
                                 new OnSuccessListener<Void>() {
                                     @Override
@@ -177,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         Toast.makeText(MainActivity.this, "Translating....", Toast.LENGTH_SHORT).show();
 
-                                        englishMarathiTranslator.translate(editTextMessage.getText().toString())
+                                        englishToSelectedLanguageTranslator.translate(editTextMessage.getText().toString())
                                                 .addOnSuccessListener(
                                                         new OnSuccessListener<String>() {
                                                             @Override
@@ -187,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                                                                 databaseReference.child("string").setValue(s).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<Void> task) {
-                                                                        Toast.makeText(MainActivity.this, "Successful!", Toast.LENGTH_SHORT).show();
+                                                                        Toast.makeText(MainActivity.this, "Successful in uploading!", Toast.LENGTH_SHORT).show();
                                                                     }
                                                                 });
                                                             }
@@ -204,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
                 }).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(MainActivity.this, "Completed : ", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Completed downloading", Toast.LENGTH_SHORT).show();
                         Log.d("QWER", "Completed : ");
                     }
                 }).addOnCanceledListener(new OnCanceledListener() {
@@ -218,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public Task<String> then(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(MainActivity.this, "Successful!!!!", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(MainActivity.this, "Successful!!!!", Toast.LENGTH_SHORT).show();
                                     Log.d("QWER", "Successful!!!!");
                                     Exception e = task.getException();
                                     return Tasks.forException(e);
