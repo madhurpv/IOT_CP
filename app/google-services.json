@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "963687788692",
+    "firebase_url": "https://cp-iot-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cp-iot",
+    "storage_bucket": "cp-iot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963687788692:android:2be4d0cf647a59e5428481",
+        "android_client_info": {
+          "package_name": "com.mv.iot_cp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbKbvnByclIZrNEky_ge7JgHms3lGSSI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
