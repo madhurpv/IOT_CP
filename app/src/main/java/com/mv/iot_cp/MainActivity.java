@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     EditText editTextMessage, editTextTranslate;
-    Button submitButton, translateButton, speakButton, speakTranslatedButton;
+    Button submitButton, translateButton, speakButton, submitTranslatedButton, speakTranslatedButton;
     Spinner dropdownLanguageSelect;
 
 
@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextToSpeech textToSpeech;
 
-    String[] dropdownLanguageSelectItems = new String[]{"Marathi", "Kannada", "Gujarati", "Bengali", "Hindi", "Tamil"};
+    //String[] dropdownLanguageSelectItems = new String[]{"Marathi", "Kannada", "Gujarati", "Bengali", "Hindi", "Tamil"};
+    String[] dropdownLanguageSelectItems = new String[]{"Marathi", "Hindi"};
     String selectedLanguage = "Marathi";
 
 
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         translateButton = findViewById(R.id.translateButton);
         editTextTranslate = findViewById(R.id.editTextTranslate);
         speakButton = findViewById(R.id.speakButton);
+        submitTranslatedButton = findViewById(R.id.submitTranslatedButton);
         speakTranslatedButton = findViewById(R.id.speakTranslatedButton);
         dropdownLanguageSelect = findViewById(R.id.dropdownLanguageSelect);
 
@@ -324,6 +326,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+            }
+        });
+
+        submitTranslatedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                databaseReference.child("string").setValue(editTextTranslate.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(MainActivity.this, "Successful in uploading!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
